@@ -32,8 +32,22 @@
                         Agent Finder
                     </a>
                 </div>
-                <div>
-                    <a href="{{ url('/contact') }}" class="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                <div class="flex items-center space-x-4">
+                    @auth
+                        @if(Auth::user()->role === 'admin')
+                            <a href="{{ route('admin.dashboard') }}" class="text-sm font-medium text-slate-700 hover:text-indigo-600">Admin Panel</a>
+                        @endif
+                        <span class="text-sm font-medium text-slate-500">Hi, {{ Auth::user()->name }}</span>
+                        <form method="POST" action="{{ route('logout') }}" class="inline">
+                            @csrf
+                            <button type="submit" class="text-sm font-medium text-red-600 hover:text-red-800">Logout</button>
+                        </form>
+                    @else
+                        <a href="{{ route('login') }}" class="text-sm font-medium text-slate-700 hover:text-indigo-600">Log in</a>
+                        <a href="{{ route('register') }}" class="text-sm font-medium text-slate-700 hover:text-indigo-600">Sign up</a>
+                    @endauth
+                    
+                    <a href="{{ url('/contact') }}" class="ml-4 inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
                         Contact Us
                     </a>
                 </div>
