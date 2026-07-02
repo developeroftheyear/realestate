@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Models\Property;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PropertyController extends Controller
 {
@@ -28,10 +29,13 @@ class PropertyController extends Controller
             'bathrooms' => 'required|numeric',
             'price' => 'required|numeric',
             'description' => 'required|string',
-            'image_url' => 'required|url',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'area_sqft' => 'required|numeric',
-            'is_featured' => 'boolean'
+            'is_featured' => 'boolean',
         ]);
+
+        $validated['image_url'] = $request->file('image')->store('properties', 'public');
+        unset($validated['image']);
 
         $validated['is_featured'] = $request->has('is_featured');
         Property::create($validated);
@@ -41,7 +45,7 @@ class PropertyController extends Controller
 
     public function show(Property $property)
     {
-        return view('dashboard.properties.show', compact('property'));
+        return redirect()->route('panel.properties.edit', $property);
     }
 
     public function edit(Property $property)
@@ -58,10 +62,20 @@ class PropertyController extends Controller
             'bathrooms' => 'required|numeric',
             'price' => 'required|numeric',
             'description' => 'required|string',
-            'image_url' => 'required|url',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'area_sqft' => 'required|numeric',
-            'is_featured' => 'boolean'
+            'is_featured' => 'boolean',
         ]);
+
+        if ($request->hasFile('image')) {
+            if ($property->image_url && ! str_starts_with($property->image_url, 'http')) {
+                Storage::disk('public')->delete($property->image_url);
+            }
+
+            $validated['image_url'] = $request->file('image')->store('properties', 'public');
+        }
+
+        unset($validated['image']);
 
         $validated['is_featured'] = $request->has('is_featured');
         $property->update($validated);
@@ -71,7 +85,12 @@ class PropertyController extends Controller
 
     public function destroy(Property $property)
     {
+        if ($property->image_url && ! str_starts_with($property->image_url, 'http')) {
+            Storage::disk('public')->delete($property->image_url);
+        }
+
         $property->delete();
+
         return redirect()->route('panel.properties.index')->with('success', 'Property deleted successfully.');
     }
 }

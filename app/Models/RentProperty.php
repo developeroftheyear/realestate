@@ -31,6 +31,8 @@ class RentProperty extends Model
         'is_furnished' => 'boolean',
         'available_from' => 'date'
     ];
+
+    protected $appends = ['resolved_image_url'];
     
     // Helper method to format rent price
     public function formattedRent()
@@ -42,5 +44,23 @@ class RentProperty extends Model
     public function formattedDeposit()
     {
         return '$' . number_format($this->security_deposit, 0);
+    }
+
+    public function getResolvedImageUrlAttribute(): string
+    {
+        if (empty($this->image_url)) {
+            return 'https://via.placeholder.com/400x300';
+        }
+
+        if (str_starts_with($this->image_url, 'http://') || str_starts_with($this->image_url, 'https://')) {
+            return $this->image_url;
+        }
+
+        return asset('storage/' . $this->image_url);
+    }
+
+    public function contactMessages()
+    {
+        return $this->hasMany(ContactMessage::class);
     }
 }

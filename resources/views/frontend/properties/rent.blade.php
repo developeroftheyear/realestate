@@ -32,28 +32,41 @@
     <!-- Filter/Search Bar (Modern way for rent page) -->
     <div class="container mx-auto px-6 -mt-8 relative z-20">
         <div class="bg-white rounded-lg shadow-lg p-6">
+            @if(!empty($isSearching))
+                <div class="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-lg bg-indigo-50 border border-indigo-100 px-4 py-3 text-sm text-indigo-800">
+                    <span>
+                        Showing <strong>{{ $totalProperties }}</strong> {{ Str::plural('property', $totalProperties) }}
+                        matching at least <strong>{{ $requiredMatches }}</strong> of your {{ count($activeFilters) }} selected {{ Str::plural('filter', count($activeFilters)) }}.
+                    </span>
+                    <a href="{{ route('rent.index') }}" class="font-medium text-indigo-600 hover:text-indigo-800">Clear search</a>
+                </div>
+            @endif
+
             <form action="{{ route('rent.search') }}" method="GET" class="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Min Rent</label>
-                    <input type="number" name="min_rent" placeholder="KSh 100,000" class="w-full border rounded-lg px-3 py-2">
+                    <input type="number" name="min_rent" value="{{ request('min_rent') }}" placeholder="KSh 100,000" min="0" class="w-full border rounded-lg px-3 py-2">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Max Rent</label>
-                    <input type="number" name="max_rent" placeholder="KSh 1,000,000" class="w-full border rounded-lg px-3 py-2">
+                    <input type="number" name="max_rent" value="{{ request('max_rent') }}" placeholder="KSh 1,000,000" min="0" class="w-full border rounded-lg px-3 py-2">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Bedrooms</label>
                     <select name="bedrooms" class="w-full border rounded-lg px-3 py-2">
                         <option value="">Any</option>
-                        <option>1</option><option>2</option><option>3</option><option>4+</option>
+                        <option value="1" @selected(request('bedrooms') == '1')>1</option>
+                        <option value="2" @selected(request('bedrooms') == '2')>2</option>
+                        <option value="3" @selected(request('bedrooms') == '3')>3</option>
+                        <option value="4+" @selected(request('bedrooms') == '4+')>4+</option>
                     </select>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Pet Friendly</label>
                     <select name="pet_friendly" class="w-full border rounded-lg px-3 py-2">
                         <option value="">Any</option>
-                        <option value="1">Yes</option>
-                        <option value="0">No</option>
+                        <option value="1" @selected(request('pet_friendly') === '1')>Yes</option>
+                        <option value="0" @selected(request('pet_friendly') === '0')>No</option>
                     </select>
                 </div>
                 <div class="flex items-end">
@@ -68,7 +81,9 @@
     <!-- Available Listings Section - SAME layout as your design -->
     <div class="container mx-auto px-6 py-12">
         <div class="flex justify-between items-center mb-8">
-            <h2 class="text-3xl font-bold text-gray-800">Available Rentals</h2>
+            <h2 class="text-3xl font-bold text-gray-800">
+                {{ !empty($isSearching) ? 'Search Results' : 'Available Rentals' }}
+            </h2>
             <p class="text-gray-500">Total: {{ $totalProperties ?? 0 }} properties</p>
         </div>
 
@@ -78,7 +93,7 @@
             <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300">
                 <!-- Property Image -->
                 <div class="relative h-56 overflow-hidden">
-                    <img src="{{ $property->image_url ?? 'https://via.placeholder.com/400x300' }}" alt="{{ $property->title ?? 'Property' }}" class="w-full h-full object-cover hover:scale-105 transition duration-500">
+                    <img src="{{ $property->resolved_image_url }}" alt="{{ $property->title ?? 'Property' }}" class="w-full h-full object-cover hover:scale-105 transition duration-500">
                     
                     <!-- Rent-specific badge -->
                     <div class="absolute top-3 right-3 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
@@ -151,8 +166,13 @@
             @empty
             <div class="col-span-3 text-center py-12">
                 <i class="fas fa-home text-6xl text-gray-300 mb-4"></i>
-                <p class="text-gray-500 text-lg">No rental properties available at the moment.</p>
-                <p class="text-gray-400">Check back soon for new listings!</p>
+                @if(!empty($isSearching))
+                    <p class="text-gray-500 text-lg">No rentals match at least {{ $requiredMatches }} of your selected filters.</p>
+                    <p class="text-gray-400 mt-2">Try adjusting your search or <a href="{{ route('rent.index') }}" class="text-indigo-600 hover:text-indigo-800">view all listings</a>.</p>
+                @else
+                    <p class="text-gray-500 text-lg">No rental properties available at the moment.</p>
+                    <p class="text-gray-400">Check back soon for new listings!</p>
+                @endif
             </div>
             @endforelse
         </div>

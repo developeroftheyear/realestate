@@ -92,19 +92,32 @@
                 @endif
 
                 <h2 class="text-3xl font-extrabold text-slate-900 mb-8">Send us a Message</h2>
+
+                @auth
+                    <p class="mb-6 text-sm text-slate-500 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3">
+                        Your name and email are filled from your account. Just add your phone number and message.
+                    </p>
+                @endauth
                 
                 <form action="{{ route('contact.submit') }}" method="POST" class="space-y-6">
                     @csrf
+
+                    @if(request('rent_property_id'))
+                        <input type="hidden" name="rent_property_id" value="{{ request('rent_property_id') }}">
+                    @endif
+                    @if(request('property_id'))
+                        <input type="hidden" name="property_id" value="{{ request('property_id') }}">
+                    @endif
                     
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div>
                             <label for="name" class="block text-sm font-semibold text-slate-700 mb-1">Full Name</label>
-                            <input type="text" name="name" id="name" required class="w-full rounded-xl border-slate-200 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-colors shadow-sm" placeholder="John Doe" value="{{ old('name') }}">
+                            <input type="text" name="name" id="name" required @auth readonly @endauth class="w-full rounded-xl border-slate-200 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-colors shadow-sm @auth bg-slate-50 text-slate-700 @endauth" placeholder="John Doe" value="{{ old('name', auth()->user()?->name) }}">
                             @error('name') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
                         </div>
                         <div>
                             <label for="email" class="block text-sm font-semibold text-slate-700 mb-1">Email Address</label>
-                            <input type="email" name="email" id="email" required class="w-full rounded-xl border-slate-200 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-colors shadow-sm" placeholder="john@example.com" value="{{ old('email') }}">
+                            <input type="email" name="email" id="email" required @auth readonly @endauth class="w-full rounded-xl border-slate-200 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-colors shadow-sm @auth bg-slate-50 text-slate-700 @endauth" placeholder="john@example.com" value="{{ old('email', auth()->user()?->email) }}">
                             @error('email') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
                         </div>
                     </div>
@@ -112,7 +125,7 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div>
                             <label for="phone" class="block text-sm font-semibold text-slate-700 mb-1">Phone Number <span class="text-slate-400 font-normal">(Optional)</span></label>
-                            <input type="text" name="phone" id="phone" class="w-full rounded-xl border-slate-200 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-colors shadow-sm" placeholder="(555) 123-4567" value="{{ old('phone') }}">
+                            <input type="text" name="phone" id="phone" @auth autofocus @endauth class="w-full rounded-xl border-slate-200 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-colors shadow-sm" placeholder="(555) 123-4567" value="{{ old('phone') }}">
                             @error('phone') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
                         </div>
                         <div>
@@ -120,6 +133,7 @@
                             <select name="subject" id="subject" required class="w-full rounded-xl border-slate-200 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-colors shadow-sm">
                                 <option value="">Select a subject...</option>
                                 <option value="General Inquiry" {{ old('subject', request('subject')) == 'General Inquiry' ? 'selected' : '' }}>General Inquiry</option>
+                                <option value="Apply to Rent" {{ old('subject', request('subject')) == 'Apply to Rent' ? 'selected' : '' }}>Apply to Rent</option>
                                 <option value="Schedule a Viewing" {{ old('subject', request('subject')) == 'Schedule a Viewing' ? 'selected' : '' }}>Schedule a Viewing</option>
                                 <option value="Property Valuation" {{ old('subject', request('subject')) == 'Property Valuation' ? 'selected' : '' }}>Property Valuation</option>
                                 <option value="Partnership" {{ old('subject', request('subject')) == 'Partnership' ? 'selected' : '' }}>Partnership</option>

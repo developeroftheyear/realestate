@@ -5,98 +5,155 @@ namespace App\Http\Controllers\Frontend;
 use App\Models\RentProperty;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class RentController extends Controller
 {
     /**
      * Display a listing of rental properties.
      */
-    public function index()
+    public function index(Request $request)
     {
-        // Get all rental properties
-        $rentProperties = RentProperty::latest()->get();
-        $totalProperties = $rentProperties->count();
-        
-        // Return the view
-        return view('frontend.properties.rent', compact('rentProperties', 'totalProperties'));
+        return $this->renderRentListings($request);
     }
-    
+
     /**
      * Display the specified rental property.
      */
     public function show($id)
     {
-        // Find the property or throw 404
         $property = RentProperty::findOrFail($id);
-        
-        // Return the view with property details
+
         return view('frontend.properties.rent-detail', compact('property'));
     }
-    
+
     /**
      * Search/filter rental properties.
      */
     public function search(Request $request)
     {
-        $query = RentProperty::query();
-        
-        // Filter by minimum monthly rent
-        if ($request->has('min_rent') && $request->min_rent) {
-            $query->where('monthly_rent', '>=', $request->min_rent);
-        }
-        
-        // Filter by maximum monthly rent
-        if ($request->has('max_rent') && $request->max_rent) {
-            $query->where('monthly_rent', '<=', $request->max_rent);
-        }
-        
-        // Filter by bedrooms
-        if ($request->has('bedrooms') && $request->bedrooms !== '' && $request->bedrooms !== 'Any') {
-            if ($request->bedrooms === '4+') {
-                $query->where('bedrooms', '>=', 4);
-            } else {
-                $query->where('bedrooms', $request->bedrooms);
-            }
-        }
-        
-        // Filter by bathrooms
-        if ($request->has('bathrooms') && $request->bathrooms) {
-            $query->where('bathrooms', $request->bathrooms);
-        }
-        
-        // Filter by pet friendly
-        if ($request->has('pet_friendly') && $request->pet_friendly !== '') {
-            $query->where('is_pet_friendly', $request->pet_friendly);
-        }
-        
-        // Filter by furnished
-        if ($request->has('furnished') && $request->furnished !== '') {
-            $query->where('is_furnished', $request->furnished);
-        }
-        
-        // Filter by featured
-        if ($request->has('featured') && $request->featured) {
-            $query->where('is_featured', true);
-        }
-        
-        // Get filtered results
-        $rentProperties = $query->latest()->get();
-        $totalProperties = $rentProperties->count();
-        
-        // Return to the rent index with filtered results
-        return view('frontend.properties.rent', compact('rentProperties', 'totalProperties'));
+        return $this->renderRentListings($request);
     }
-    
+
     /**
      * Show properties by location (optional)
      */
     public function byLocation($location)
     {
-        $rentProperties = RentProperty::where('location', 'like', '%' . $location . '%')
-                                      ->latest()
-                                      ->get();
+        $request = Request::create('', 'GET', ['location' => $location]);
+
+        return $this->renderRentListings($request);
+    }
+
+    private function renderRentListings(Request $request)
+    {
+        $activeFilters = $this->activeFilters($request);
+        $isSearching = ! empty($activeFilters);
+
+        $rentProperties = $isSearching
+            ? $this->filterProperties(RentProperty::latest()->get(), $activeFilters)
+            : RentProperty::latest()->get();
+
         $totalProperties = $rentProperties->count();
-        
-        return view('frontend.properties.rent', compact('rentProperties', 'totalProperties'));
+        $requiredMatches = $this->requiredMatchCount(count($activeFilters));
+
+        return view('frontend.properties.rent', compact(
+            'rentProperties',
+            'totalProperties',
+            'isSearching',
+            'activeFilters',
+            'requiredMatches'
+        ));
+    }
+
+    private function activeFilters(Request $request): array
+    {
+        $filters = [];
+
+        if ($request->filled('min_rent')) {
+            $filters['min_rent'] = (float) $request->min_rent;
+        }
+
+        if ($request->filled('max_rent')) {
+            $filters['max_rent'] = (float) $request->max_rent;
+        }
+
+        if ($request->filled('bedrooms') && $request->bedrooms !== 'Any') {
+            $filters['bedrooms'] = $request->bedrooms;
+        }
+
+        if ($request->filled('bathrooms') && $request->bathrooms !== 'Any') {
+            $filters['bathrooms'] = $request->bathrooms;
+        }
+
+        if ($request->filled('location')) {
+            $filters['location'] = trim($request->location);
+        }
+
+        if ($request->filled('pet_friendly') && $request->pet_friendly !== '') {
+            $filters['pet_friendly'] = (bool) (int) $request->pet_friendly;
+        }
+
+        if ($request->filled('furnished') && $request->furnished !== '') {
+            $filters['furnished'] = (bool) (int) $request->furnished;
+        }
+
+        if ($request->boolean('featured')) {
+            $filters['featured'] = true;
+        }
+
+        return $filters;
+    }
+
+    private function requiredMatchCount(int $activeFilterCount): int
+    {
+        if ($activeFilterCount === 0) {
+            return 0;
+        }
+
+        if ($activeFilterCount === 1) {
+            return 1;
+        }
+
+        return 2;
+    }
+
+    private function filterProperties(Collection $properties, array $filters): Collection
+    {
+        $requiredMatches = $this->requiredMatchCount(count($filters));
+
+        return $properties->filter(function (RentProperty $property) use ($filters, $requiredMatches) {
+            $score = 0;
+
+            foreach ($filters as $key => $value) {
+                if ($this->propertyMatchesFilter($property, $key, $value)) {
+                    $score++;
+                }
+            }
+
+            return $score >= $requiredMatches;
+        })->values();
+    }
+
+    private function propertyMatchesFilter(RentProperty $property, string $key, mixed $value): bool
+    {
+        return match ($key) {
+            'min_rent' => (float) $property->monthly_rent >= (float) $value,
+            'max_rent' => (float) $property->monthly_rent <= (float) $value,
+            'bedrooms' => $value === '4+'
+                ? (int) $property->bedrooms >= 4
+                : (int) $property->bedrooms === (int) $value,
+            'bathrooms' => $value === '3+'
+                ? (int) $property->bathrooms >= 3
+                : (int) $property->bathrooms === (int) $value,
+            'location' => str_contains(
+                strtolower($property->location ?? ''),
+                strtolower((string) $value)
+            ),
+            'pet_friendly' => (bool) $property->is_pet_friendly === (bool) $value,
+            'furnished' => (bool) $property->is_furnished === (bool) $value,
+            'featured' => (bool) $property->is_featured === true,
+            default => false,
+        };
     }
 }

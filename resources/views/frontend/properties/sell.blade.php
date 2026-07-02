@@ -62,6 +62,11 @@
             <div class="mb-10 text-center">
                 <h2 class="text-3xl font-extrabold text-slate-900">Request an Appraisal</h2>
                 <p class="text-slate-500 mt-2">Fill out the form below and we'll get back to you within 24 hours.</p>
+                @auth
+                    <p class="text-sm text-slate-500 mt-3 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 inline-block">
+                        Your name and email are filled from your account. Just add your phone number and property details.
+                    </p>
+                @endauth
             </div>
 
             <form action="{{ route('sell.submit') }}" method="POST" class="space-y-6">
@@ -70,12 +75,12 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div>
                         <label for="name" class="block text-sm font-semibold text-slate-700 mb-1">Full Name</label>
-                        <input type="text" name="name" id="name" required class="w-full rounded-xl border-slate-200 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-colors shadow-sm" placeholder="John Doe" value="{{ old('name') }}">
+                        <input type="text" name="name" id="name" required @auth readonly @endauth class="w-full rounded-xl border-slate-200 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-colors shadow-sm @auth bg-slate-50 text-slate-700 @endauth" placeholder="John Doe" value="{{ old('name', auth()->user()?->name) }}">
                         @error('name') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
                     </div>
                     <div>
                         <label for="email" class="block text-sm font-semibold text-slate-700 mb-1">Email Address</label>
-                        <input type="email" name="email" id="email" required class="w-full rounded-xl border-slate-200 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-colors shadow-sm" placeholder="john@example.com" value="{{ old('email') }}">
+                        <input type="email" name="email" id="email" required @auth readonly @endauth class="w-full rounded-xl border-slate-200 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-colors shadow-sm @auth bg-slate-50 text-slate-700 @endauth" placeholder="john@example.com" value="{{ old('email', auth()->user()?->email) }}">
                         @error('email') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
                     </div>
                 </div>
@@ -83,7 +88,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div>
                         <label for="phone" class="block text-sm font-semibold text-slate-700 mb-1">Phone Number</label>
-                        <input type="text" name="phone" id="phone" required class="w-full rounded-xl border-slate-200 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-colors shadow-sm" placeholder="(555) 123-4567" value="{{ old('phone') }}">
+                        <input type="text" name="phone" id="phone" required @auth autofocus @endauth class="w-full rounded-xl border-slate-200 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-colors shadow-sm" placeholder="(555) 123-4567" value="{{ old('phone') }}">
                         @error('phone') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
                     </div>
                     <div>

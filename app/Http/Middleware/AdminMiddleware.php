@@ -16,12 +16,12 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!Auth::check()) {
-            return redirect('/login')->withErrors('You must be logged in to access the admin panel.');
+        if (! Auth::check()) {
+            return redirect()->guest(route('login'))->with('error', 'You must be logged in to access the admin panel.');
         }
 
-        if (Auth::user()->role !== 'admin') {
-            return redirect('/')->withErrors('You do not have administrative privileges.');
+        if (! Auth::user()->isAdmin()) {
+            return redirect()->route('properties.index')->with('error', 'You do not have administrative privileges.');
         }
 
         return $next($request);

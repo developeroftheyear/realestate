@@ -3,7 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 use App\Models\Role;
 use App\Models\Property;
 use App\Models\RentProperty;
@@ -13,16 +14,34 @@ class RealEstateSeeder extends Seeder
 {
     public function run(): void
     {
-        
-        // From RoleSeeder.php
-\App\Models\Role::insert([
-            ['name' => 'admin'],
-            ['name' => 'buyer'],
-            ['name' => 'seller'],
+        foreach (['admin', 'buyer', 'seller'] as $roleName) {
+            Role::firstOrCreate(['name' => $roleName]);
+        }
+
+        $adminRole = Role::where('name', 'admin')->first();
+
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@tashleyhomes.com'],
+            [
+                'name' => 'Admin User',
+                'password' => Hash::make('password'),
+                'role' => 'admin',
+                'role_id' => $adminRole?->id,
+                'email_verified_at' => now(),
+            ]
+        );
+
+        $admin->update([
+            'role' => 'admin',
+            'role_id' => $adminRole?->id,
+            'email_verified_at' => $admin->email_verified_at ?? now(),
         ]);
 
-        // From PropertySeeder.php
-Property::create([
+        if (Property::exists()) {
+            return;
+        }
+
+        Property::create([
             'title' => 'Spacious Family Home',
             'address' => '742 Evergreen Terrace, Springfield',
             'bedrooms' => 4,

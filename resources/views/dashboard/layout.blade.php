@@ -18,6 +18,7 @@
             <a href="{{ route('panel.properties.index') }}" class="block px-6 py-3 {{ request()->routeIs('panel.properties.*') ? 'bg-indigo-800' : 'hover:bg-indigo-800' }}">Properties (Buy/Sell)</a>
             <a href="{{ route('panel.rent-properties.index') }}" class="block px-6 py-3 {{ request()->routeIs('panel.rent-properties.*') ? 'bg-indigo-800' : 'hover:bg-indigo-800' }}">Rent Properties</a>
             <a href="{{ route('panel.agents.index') }}" class="block px-6 py-3 {{ request()->routeIs('panel.agents.*') ? 'bg-indigo-800' : 'hover:bg-indigo-800' }}">Agents</a>
+            <a href="{{ route('panel.contact-messages.index') }}" class="block px-6 py-3 {{ request()->routeIs('panel.contact-messages.*') ? 'bg-indigo-800' : 'hover:bg-indigo-800' }}">Contact Messages</a>
             <div class="mt-8 px-6 border-t border-indigo-800 pt-4">
                 <a href="{{ url('/') }}" class="text-indigo-300 hover:text-white flex items-center gap-2">
                     &larr; Back to Site
@@ -45,6 +46,22 @@
             @if (session('success'))
                 <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
                     <span class="block sm:inline">{{ session('success') }}</span>
+                </div>
+            @endif
+
+            @if (session('error'))
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                    <span class="block sm:inline">{{ session('error') }}</span>
+                </div>
+            @endif
+
+            @if ($errors->any())
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                    <ul class="list-disc list-inside text-sm">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
                 </div>
             @endif
 

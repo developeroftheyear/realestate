@@ -44,6 +44,13 @@ class PropertyController extends Controller
      */
     public function submitSell(Request $request)
     {
+        if ($request->user()) {
+            $request->merge([
+                'name' => $request->user()->name,
+                'email' => $request->user()->email,
+            ]);
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',

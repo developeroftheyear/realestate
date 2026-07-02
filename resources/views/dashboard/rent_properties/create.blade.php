@@ -1,4 +1,4 @@
-@extends('admin.layout')
+@extends('dashboard.layout')
 
 @section('title', 'Add New Rent Property')
 
@@ -16,7 +16,7 @@
         </div>
     @endif
 
-    <form action="{{ route('panel.rent-properties.store') }}" method="POST">
+    <form action="{{ route('panel.rent-properties.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -56,9 +56,10 @@
                 <label class="block text-sm font-medium text-gray-700">Available From</label>
                 <input type="date" name="available_from" value="{{ old('available_from') }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 border p-2">
             </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Image URL</label>
-                <input type="url" name="image_url" value="{{ old('image_url') }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 border p-2">
+            <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-gray-700">Image</label>
+                <input type="file" name="image" accept="image/*" required class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                <p class="text-xs text-gray-500 mt-1">Upload a photo for this rental listing (JPEG, PNG, GIF, or WebP, max 2MB).</p>
             </div>
             <div class="md:col-span-2">
                 <label class="block text-sm font-medium text-gray-700">Description</label>

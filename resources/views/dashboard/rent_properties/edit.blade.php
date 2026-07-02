@@ -1,4 +1,4 @@
-@extends('admin.layout')
+@extends('dashboard.layout')
 
 @section('title', 'Edit Rent Property')
 
@@ -16,7 +16,7 @@
         </div>
     @endif
 
-    <form action="{{ route('panel.rent-properties.update', $rentProperty->id) }}" method="POST">
+    <form action="{{ route('panel.rent-properties.update', $rentProperty->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         
@@ -57,9 +57,18 @@
                 <label class="block text-sm font-medium text-gray-700">Available From</label>
                 <input type="date" name="available_from" value="{{ old('available_from', optional($rentProperty->available_from)->format('Y-m-d')) }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 border p-2">
             </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Image URL</label>
-                <input type="url" name="image_url" value="{{ old('image_url', $rentProperty->image_url) }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 border p-2">
+            <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-gray-700">Current Image</label>
+                @if($rentProperty->image_url)
+                    <div class="mt-2 mb-4">
+                        <img src="{{ $rentProperty->resolved_image_url }}" alt="Current rental photo" class="h-32 w-48 object-cover rounded">
+                        <p class="text-sm text-gray-500 mt-1">Current photo</p>
+                    </div>
+                @endif
+
+                <label class="block text-sm font-medium text-gray-700 mt-4">Upload New Image</label>
+                <input type="file" name="image" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                <p class="text-xs text-gray-500 mt-1">Leave empty to keep the current image.</p>
             </div>
             <div class="md:col-span-2">
                 <label class="block text-sm font-medium text-gray-700">Description</label>

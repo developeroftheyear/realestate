@@ -62,7 +62,7 @@
                     <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300">
                         <!-- Property Image -->
                         <div class="relative h-56 overflow-hidden">
-                            <img src="{{ !empty($property->image_url) ? $property->image_url : 'https://placehold.co/400x300' }}" alt="{{ $property->title ?? 'Property' }}" class="w-full h-full object-cover hover:scale-105 transition duration-500">
+                            <img src="{{ $property->resolved_image_url }}" alt="{{ $property->title ?? 'Property' }}" class="w-full h-full object-cover hover:scale-105 transition duration-500">
                             
                             <!-- Buy-specific badge -->
                             <div class="absolute top-3 right-3 bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-semibold">

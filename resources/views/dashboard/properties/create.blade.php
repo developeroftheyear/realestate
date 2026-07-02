@@ -1,4 +1,4 @@
-@extends('admin.layout')
+@extends('dashboard.layout')
 
 @section('title', 'Add New Property')
 
@@ -46,8 +46,8 @@
             </div>
             <div class="col-span-2">
                 <label class="block text-sm font-medium text-gray-700">Image</label>
-                <input type="file" name="image" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
-                <p class="text-xs text-gray-500 mt-1"></p>
+                <input type="file" name="image" accept="image/*" required class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                <p class="text-xs text-gray-500 mt-1">Upload a photo for this listing (JPEG, PNG, GIF, or WebP, max 2MB).</p>
             </div>
             <div class="col-span-2">
                 <label class="block text-sm font-medium text-gray-700">Description</label>

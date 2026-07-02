@@ -1,4 +1,4 @@
-@extends('admin.layout')
+@extends('dashboard.layout')
 
 @section('title', 'Edit Property')
 
@@ -46,17 +46,17 @@
                 <input type="number" name="area_sqft" value="{{ old('area_sqft', $property->area_sqft) }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 border p-2">
             </div>
            <div class="col-span-2">
-                <label class="block text-sm font-medium text-gray-700">Current Photo</label>
-                @if($property->photo)
+                <label class="block text-sm font-medium text-gray-700">Current Image</label>
+                @if($property->image_url)
                     <div class="mt-2 mb-4">
-                        <img src="{{ asset('storage/' . $property->photo) }}" alt="Current Photo" class="h-32 w-32 object-cover rounded">
+                        <img src="{{ $property->resolved_image_url }}" alt="Current property photo" class="h-32 w-48 object-cover rounded">
                         <p class="text-sm text-gray-500 mt-1">Current photo</p>
                     </div>
                 @endif
-                
-                <label class="block text-sm font-medium text-gray-700 mt-4">Upload New Photo</label>
-                <input type="file" name="photo" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
-                <p class="text-xs text-gray-500 mt-1"></p>
+
+                <label class="block text-sm font-medium text-gray-700 mt-4">Upload New Image</label>
+                <input type="file" name="image" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                <p class="text-xs text-gray-500 mt-1">Leave empty to keep the current image.</p>
             </div>
             <div class="md:col-span-2">
                 <label class="block text-sm font-medium text-gray-700">Description</label>

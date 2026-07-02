@@ -12,7 +12,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- Main Image & Details -->
             <div class="lg:col-span-2">
-                <img src="{{ !empty($property->image_url) ? $property->image_url : 'https://placehold.co/800x400' }}" alt="{{ $property->title ?? 'Property' }}" class="w-full h-96 object-cover rounded-xl shadow-lg">
+                <img src="{{ $property->resolved_image_url }}" alt="{{ $property->title ?? 'Property' }}" class="w-full h-96 object-cover rounded-xl shadow-lg">
                 
                 <div class="mt-6">
                     <h1 class="text-3xl font-bold text-gray-800">{{ $property->title ?? 'Property Title' }}</h1>
@@ -107,7 +107,7 @@
                         <i class="fab fa-whatsapp text-xl mr-2"></i>WhatsApp Agent
                     </a>
                     
-                    <a href="{{ route('contact.index', ['subject' => 'Schedule a Viewing', 'message' => 'I would like to schedule a viewing for the property: ' . ($property->title ?? 'Property') . ' (ID: #' . ($property->id ?? 'N/A') . ').']) }}" class="w-full flex items-center justify-center border border-blue-600 text-blue-600 py-3 rounded-lg hover:bg-blue-50 transition font-semibold">
+                    <a href="{{ route('contact.index', ['subject' => 'Schedule a Viewing', 'message' => 'I would like to schedule a viewing for the property: ' . ($property->title ?? 'Property') . ' (ID: #' . ($property->id ?? 'N/A') . ').', 'property_id' => $property->id]) }}" class="w-full flex items-center justify-center border border-blue-600 text-blue-600 py-3 rounded-lg hover:bg-blue-50 transition font-semibold">
                         <i class="fas fa-calendar-alt mr-2"></i>Schedule Viewing
                     </a>
 

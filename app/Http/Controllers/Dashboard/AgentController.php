@@ -43,7 +43,7 @@ class AgentController extends Controller
 
     public function show(Agent $agent)
     {
-        return view('dashboard.agents.show', compact('agent'));
+        return redirect()->route('panel.agents.edit', $agent);
     }
 
     public function edit(Agent $agent)
