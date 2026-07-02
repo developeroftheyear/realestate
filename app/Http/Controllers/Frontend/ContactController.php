@@ -10,7 +10,7 @@ class ContactController extends Controller
 {
     public function index()
     {
-        return view('frontend.contact.index');
+        return view('frontend.contact.contact');
     }
 
     public function submit(Request $request)

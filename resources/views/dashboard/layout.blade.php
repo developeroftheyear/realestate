@@ -14,10 +14,10 @@
             <h2 class="text-2xl font-bold tracking-wider">Admin Panel</h2>
         </div>
         <nav class="mt-6">
-            <a href="{{ route('panel.dashboard') }}" class="block px-6 py-3 {{ request()->routeIs('admin.dashboard') ? 'bg-indigo-800' : 'hover:bg-indigo-800' }}">Dashboard</a>
-            <a href="{{ route('panel.properties.index') }}" class="block px-6 py-3 {{ request()->routeIs('admin.properties.*') ? 'bg-indigo-800' : 'hover:bg-indigo-800' }}">Properties (Buy/Sell)</a>
-            <a href="{{ route('panel.rent-properties.index') }}" class="block px-6 py-3 {{ request()->routeIs('admin.rent-properties.*') ? 'bg-indigo-800' : 'hover:bg-indigo-800' }}">Rent Properties</a>
-            <a href="{{ route('panel.agents.index') }}" class="block px-6 py-3 {{ request()->routeIs('admin.agents.*') ? 'bg-indigo-800' : 'hover:bg-indigo-800' }}">Agents</a>
+            <a href="{{ route('panel.dashboard') }}" class="block px-6 py-3 {{ request()->routeIs('panel.dashboard') ? 'bg-indigo-800' : 'hover:bg-indigo-800' }}">Dashboard</a>
+            <a href="{{ route('panel.properties.index') }}" class="block px-6 py-3 {{ request()->routeIs('panel.properties.*') ? 'bg-indigo-800' : 'hover:bg-indigo-800' }}">Properties (Buy/Sell)</a>
+            <a href="{{ route('panel.rent-properties.index') }}" class="block px-6 py-3 {{ request()->routeIs('panel.rent-properties.*') ? 'bg-indigo-800' : 'hover:bg-indigo-800' }}">Rent Properties</a>
+            <a href="{{ route('panel.agents.index') }}" class="block px-6 py-3 {{ request()->routeIs('panel.agents.*') ? 'bg-indigo-800' : 'hover:bg-indigo-800' }}">Agents</a>
             <div class="mt-8 px-6 border-t border-indigo-800 pt-4">
                 <a href="{{ url('/') }}" class="text-indigo-300 hover:text-white flex items-center gap-2">
                     &larr; Back to Site
@@ -29,10 +29,14 @@
     <!-- Main Content -->
     <main class="flex-1 flex flex-col h-screen overflow-hidden">
         <!-- Top Header -->
-        <header class="bg-white shadow-sm py-4 px-6 flex justify-between items-center">
+        <header class="bg-white shadow-sm py-4 px-6 flex justify-between items-center border-b border-slate-200">
             <h1 class="text-xl font-semibold text-gray-800">@yield('title', 'Dashboard')</h1>
-            <div>
-                <span class="text-gray-500">Admin</span>
+            <div class="flex items-center gap-4">
+                <span class="text-sm font-medium text-slate-600">{{ Auth::user()->name }} (Admin)</span>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="text-sm font-medium text-red-600 hover:text-red-800 transition-colors">Logout</button>
+                </form>
             </div>
         </header>
 

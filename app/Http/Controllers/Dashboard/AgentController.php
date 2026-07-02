@@ -12,7 +12,7 @@ class AgentController extends Controller
     public function index()
     {
         $agents = Agent::latest()->paginate(10);
-        return view('dashboard.agents.index', compact('agents'));
+        return view('dashboard.agents.agents', compact('agents'));
     }
 
     public function create()

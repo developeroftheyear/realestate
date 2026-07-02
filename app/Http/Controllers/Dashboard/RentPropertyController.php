@@ -11,7 +11,7 @@ class RentPropertyController extends Controller
     public function index()
     {
         $properties = RentProperty::latest()->paginate(10);
-        return view('dashboard.rent_properties.index', compact('properties'));
+        return view('dashboard.rent_properties.rent_properties', compact('properties'));
     }
 
     public function create()

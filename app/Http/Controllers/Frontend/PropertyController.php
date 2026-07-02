@@ -19,7 +19,7 @@ class PropertyController extends Controller
         $properties = Property::latest()->get();
         
         // Return the correct view (index.blade.php)
-        return view('frontend.properties.index', compact('properties'));
+        return view('frontend.properties.properties', compact('properties'));
     }
 
     /**
@@ -65,7 +65,7 @@ class PropertyController extends Controller
     public function agentFinder()
     {
         $agents = Agent::all();
-        return view('frontend.agents.index', compact('agents'));
+        return view('frontend.agents.agents', compact('agents'));
     }
 
 }

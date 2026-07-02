@@ -11,7 +11,7 @@ class PropertyController extends Controller
     public function index()
     {
         $properties = Property::latest()->paginate(10);
-        return view('dashboard.properties.index', compact('properties'));
+        return view('dashboard.properties.properties', compact('properties'));
     }
 
     public function create()
