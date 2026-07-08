@@ -5,8 +5,7 @@
 @section('content')
     <!-- Hero Banner Section -->
     <header class="relative bg-slate-900 py-24 sm:py-32 overflow-hidden">
-        <div class="absolute inset-0 z-0">
-            <!-- Using a solid dark background with subtle patterns if image is missing -->
+        <div class="absolute inset-0 z-0 pointer-events-none" aria-hidden="true">
             <div class="absolute inset-0 bg-slate-900"></div>
             <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/80 to-transparent"></div>
         </div>
@@ -33,7 +32,7 @@
                 <div>
                     <h3 class="text-2xl font-bold mb-6">Contact Information</h3>
                     <p class="text-indigo-200 mb-10 leading-relaxed">
-                        Fill out the form and our team will get back to you within 24 hours. For immediate assistance, please call us directly.
+                        Fill out the form and our team will get back to you within 24 hours. For immediate assistance, email us directly.
                     </p>
                     
                     <div class="space-y-6">
@@ -46,7 +45,7 @@
                             </div>
                             <div>
                                 <h4 class="font-semibold mb-1">Office Location</h4>
-                                <p class="text-indigo-200 text-sm">123 Luxury Avenue, Suite 500<br>Beverly Hills, CA 90210</p>
+                                <p class="text-indigo-200 text-sm">Westlands Business Park, Suite 12<br>Nairobi, Kenya</p>
                             </div>
                         </div>
 
@@ -58,7 +57,7 @@
                             </div>
                             <div>
                                 <h4 class="font-semibold mb-1">Phone Number</h4>
-                                <p class="text-indigo-200 text-sm">+1 (800) 555-0199</p>
+                                <a href="tel:+254792051974" class="text-indigo-200 text-sm hover:text-white transition-colors">+254 792 051 974</a>
                             </div>
                         </div>
 
@@ -70,7 +69,7 @@
                             </div>
                             <div>
                                 <h4 class="font-semibold mb-1">Email Address</h4>
-                                <p class="text-indigo-200 text-sm">support@tashleyhomes.com</p>
+                                <a href="mailto:support@tashleyhomes.com" class="text-indigo-200 text-sm hover:text-white transition-colors">support@tashleyhomes.com</a>
                             </div>
                         </div>
                     </div>

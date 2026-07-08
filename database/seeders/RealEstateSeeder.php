@@ -32,16 +32,89 @@ class RealEstateSeeder extends Seeder
         );
 
         $admin->update([
+            'name' => 'Admin User',
             'role' => 'admin',
             'role_id' => $adminRole?->id,
             'email_verified_at' => $admin->email_verified_at ?? now(),
+            'password' => Hash::make('password'),
         ]);
 
-        if (Property::exists()) {
+        $agents = $this->seedAgents();
+
+        if (! Property::exists()) {
+            $this->seedBuyProperties($agents);
+        } else {
+            $this->assignAgentsToListings($agents);
+        }
+
+        if (! RentProperty::exists()) {
+            $this->seedRentProperties($agents);
+        } else {
+            $this->assignAgentsToRentListings($agents);
+        }
+    }
+
+    private function seedAgents()
+    {
+        $agentData = [
+            [
+                'name' => 'Grace Wanjiku',
+                'email' => 'grace@tashleyhomes.com',
+                'phone' => '+254 712 345 678',
+                'bio' => 'Specializing in luxury homes and high-end residential sales across Nairobi and its suburbs. Over a decade of experience helping families find their dream homes.',
+                'experience_years' => 12,
+            ],
+            [
+                'name' => 'James Ochieng',
+                'email' => 'james@tashleyhomes.com',
+                'phone' => '+254 723 456 789',
+                'bio' => 'Expert in rental properties and property management. Dedicated to matching tenants with the perfect home and guiding landlords through the rental process.',
+                'experience_years' => 8,
+            ],
+            [
+                'name' => 'Sarah Mwangi',
+                'email' => 'sarah@tashleyhomes.com',
+                'phone' => '+254 734 567 890',
+                'bio' => 'Focused on commercial and residential sales in Westlands, Kilimani, and Karen. Known for personalized service and deep market knowledge.',
+                'experience_years' => 10,
+            ],
+        ];
+
+        $agents = collect();
+
+        foreach ($agentData as $data) {
+            $agents->push(Agent::firstOrCreate(['email' => $data['email']], $data));
+        }
+
+        return $agents;
+    }
+
+    private function assignAgentsToListings($agents): void
+    {
+        if ($agents->isEmpty()) {
             return;
         }
 
-        Property::create([
+        Property::whereNull('agent_id')->get()->each(function ($property, $index) use ($agents) {
+            $property->update(['agent_id' => $agents[$index % $agents->count()]->id]);
+        });
+    }
+
+    private function assignAgentsToRentListings($agents): void
+    {
+        if ($agents->isEmpty()) {
+            return;
+        }
+
+        RentProperty::whereNull('agent_id')->get()->each(function ($property, $index) use ($agents) {
+            $property->update(['agent_id' => $agents[$index % $agents->count()]->id]);
+        });
+    }
+
+    private function seedBuyProperties($agents): void
+    {
+        $listings = [
+        [
             'title' => 'Spacious Family Home',
             'address' => '742 Evergreen Terrace, Springfield',
             'bedrooms' => 4,
@@ -51,9 +124,8 @@ class RealEstateSeeder extends Seeder
             'is_featured' => true,
             'image_url' => 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80',
             'description' => 'A charming, spacious family home featuring a large backyard, cozy fireplace, and an attached two-car garage. Located in a quiet, friendly neighborhood close to local parks and excellent schools.',
-        ]);
-
-        Property::create([
+        ],
+        [
             'title' => 'Modern Canyon Masterpiece',
             'address' => '1008 Estate Drive, Beverly Hills',
             'bedrooms' => 6,
@@ -63,9 +135,8 @@ class RealEstateSeeder extends Seeder
             'is_featured' => true,
             'image_url' => 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80',
             'description' => 'A breathtaking architectural masterpiece with sweeping canyon views. Boasts an infinity-edge pool, private home theater, state-of-the-art chef\'s kitchen, and a separate guest pavilion.',
-        ]);
-
-        Property::create([
+        ],
+        [
             'title' => 'Classic Victorian Townhouse',
             'address' => '221B Baker Street, London',
             'bedrooms' => 3,
@@ -75,9 +146,8 @@ class RealEstateSeeder extends Seeder
             'is_featured' => false,
             'image_url' => 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=800&q=80',
             'description' => 'Classic Victorian townhouse packed with character. High ceilings, original fireplaces, and study space. Ideally situated with excellent transport links and historical charm.',
-        ]);
-
-        Property::create([
+        ],
+        [
             'title' => 'Luxury Skyline Penthouse',
             'address' => '455 Skyline Boulevard, San Francisco',
             'bedrooms' => 2,
@@ -87,9 +157,8 @@ class RealEstateSeeder extends Seeder
             'is_featured' => false,
             'image_url' => 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80',
             'description' => 'Stunning modern penthouse featuring floor-to-ceiling windows with panoramic Bay views. Includes smart home automation, a wrap-around private terrace, and high-end luxury finishes throughout.',
-        ]);
-
-        Property::create([
+        ],
+        [
             'title' => 'Cozy Suburban Retreat',
             'address' => '800 Maple Avenue, Riverdale',
             'bedrooms' => 3,
@@ -99,10 +168,19 @@ class RealEstateSeeder extends Seeder
             'is_featured' => false,
             'image_url' => 'https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?auto=format&fit=crop&w=800&q=80',
             'description' => 'Lovely suburban retreat with mature landscaping, a modern open-concept kitchen, and a peaceful screened-in porch. Perfect for first-time buyers.',
-        ]);
+        ],
+        ];
 
-        // From RentPropertySeeder.php
-RentProperty::create([
+        foreach ($listings as $index => $data) {
+            $data['agent_id'] = $agents[$index % $agents->count()]->id;
+            Property::create($data);
+        }
+    }
+
+    private function seedRentProperties($agents): void
+    {
+        $listings = [
+        [
             'title' => 'Luxury Downtown Apartment',
             'location' => '123 Main St, Downtown',
             'monthly_rent' => 250000,
@@ -117,9 +195,8 @@ RentProperty::create([
             'is_featured' => true,
             'is_pet_friendly' => true,
             'is_furnished' => true,
-        ]);
-        
-        RentProperty::create([
+        ],
+        [
             'title' => 'Cozy Suburban House',
             'location' => '456 Oak Ave, Suburbs',
             'monthly_rent' => 185000,
@@ -134,9 +211,8 @@ RentProperty::create([
             'is_featured' => false,
             'is_pet_friendly' => true,
             'is_furnished' => false,
-        ]);
-        
-        RentProperty::create([
+        ],
+        [
             'title' => 'Modern Beachfront Condo',
             'location' => '789 Coastal Rd, Beachside',
             'monthly_rent' => 350000,
@@ -151,9 +227,8 @@ RentProperty::create([
             'is_featured' => true,
             'is_pet_friendly' => false,
             'is_furnished' => true,
-        ]);
-        
-        RentProperty::create([
+        ],
+        [
             'title' => 'Urban Loft Studio',
             'location' => '101 Arts District',
             'monthly_rent' => 160000,
@@ -168,9 +243,8 @@ RentProperty::create([
             'is_featured' => false,
             'is_pet_friendly' => true,
             'is_furnished' => false,
-        ]);
-        
-        RentProperty::create([
+        ],
+        [
             'title' => 'Spacious Penthouse',
             'location' => '500 Highrise Ave',
             'monthly_rent' => 600000,
@@ -185,7 +259,12 @@ RentProperty::create([
             'is_featured' => true,
             'is_pet_friendly' => false,
             'is_furnished' => true,
-        ]);
+        ],
+        ];
 
+        foreach ($listings as $index => $data) {
+            $data['agent_id'] = $agents[$index % $agents->count()]->id;
+            RentProperty::create($data);
+        }
     }
 }

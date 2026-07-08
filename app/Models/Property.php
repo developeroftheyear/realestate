@@ -16,6 +16,7 @@ class Property extends Model
         'image_url',
         'area_sqft',
         'is_featured',
+        'agent_id',
     ];
 
     protected $appends = ['resolved_image_url'];
@@ -31,6 +32,11 @@ class Property extends Model
         }
 
         return asset('storage/' . $this->image_url);
+    }
+
+    public function agent()
+    {
+        return $this->belongsTo(Agent::class);
     }
 
     public function contactMessages()

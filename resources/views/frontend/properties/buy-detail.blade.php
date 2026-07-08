@@ -3,6 +3,14 @@
 @section('title', $property->title . ' - Buy | TashleyHomes')
 
 @section('content')
+    @php
+        $agent = $property->agent;
+        $agentName = $agent?->name ?? 'TashleyHomes Team';
+        $agentEmail = $agent?->email ?? 'support@tashleyhomes.com';
+        $agentPhone = $agent?->phone ?? '+254 792 051 974';
+        $emailSubject = 'Inquiry about: ' . ($property->title ?? 'Property');
+        $emailBody = 'Hi, I am interested in buying the property "' . ($property->title ?? 'Property') . '" (ID: #' . ($property->id ?? 'N/A') . '). Please contact me with more details.';
+    @endphp
     <!-- Property Detail Section -->
     <div class="container mx-auto px-6 py-12">
         <a href="{{ route('properties.index') }}" class="text-blue-600 mb-6 inline-block hover:text-blue-800 transition">
@@ -103,8 +111,8 @@
                     </div>
                     
                     <!-- Action Form -->
-                    <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $property->agent_phone ?? '254712345678') }}?text=Hi!%20I'm%20interested%20in%20buying%20the%20property%20%22{{ urlencode($property->title ?? 'Property') }}%22" target="_blank" class="w-full flex items-center justify-center bg-green-500 text-white py-3 rounded-lg hover:bg-green-600 transition mb-3 shadow-lg hover:shadow-green-100 font-semibold">
-                        <i class="fab fa-whatsapp text-xl mr-2"></i>WhatsApp Agent
+                    <a href="mailto:{{ $agentEmail }}?subject={{ rawurlencode($emailSubject) }}&body={{ rawurlencode($emailBody) }}" class="w-full flex items-center justify-center bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition mb-3 shadow-lg hover:shadow-indigo-100 font-semibold">
+                        <i class="fas fa-envelope text-xl mr-2"></i>Email Agent
                     </a>
                     
                     <a href="{{ route('contact.index', ['subject' => 'Schedule a Viewing', 'message' => 'I would like to schedule a viewing for the property: ' . ($property->title ?? 'Property') . ' (ID: #' . ($property->id ?? 'N/A') . ').', 'property_id' => $property->id]) }}" class="w-full flex items-center justify-center border border-blue-600 text-blue-600 py-3 rounded-lg hover:bg-blue-50 transition font-semibold">
@@ -116,11 +124,14 @@
                         <p class="text-sm text-gray-600 mb-2">
                             <i class="fas fa-user-circle mr-2 text-blue-600"></i>Listed by:
                         </p>
-                        <div class="flex justify-between items-center">
-                            <span class="font-semibold text-gray-800">{{ $property->agent_name ?? 'TashleyHomes Team' }}</span>
-                            <span class="text-sm text-gray-500">
-                                <i class="fas fa-phone mr-1"></i> {{ $property->agent_phone ?? '(+254) 792051974' }}
-                            </span>
+                        <div class="space-y-2">
+                            <span class="font-semibold text-gray-800 block">{{ $agentName }}</span>
+                            <a href="mailto:{{ $agentEmail }}" class="text-sm text-indigo-600 hover:text-indigo-800 block">
+                                <i class="fas fa-envelope mr-1"></i>{{ $agentEmail }}
+                            </a>
+                            <a href="tel:{{ preg_replace('/\s+/', '', $agentPhone) }}" class="text-sm text-gray-500 hover:text-gray-700 block">
+                                <i class="fas fa-phone mr-1"></i>{{ $agentPhone }}
+                            </a>
                         </div>
                     </div>
                 </div>

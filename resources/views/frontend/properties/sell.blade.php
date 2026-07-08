@@ -5,8 +5,8 @@
 @section('content')
     <!-- Hero Banner Section -->
     <header class="relative bg-slate-900 py-24 sm:py-32 overflow-hidden">
-        <div class="absolute inset-0 z-0">
-            <img src="{{ asset('images/hero.png') }}" alt="TashleyHomes Luxury Property" class="w-full h-full object-cover opacity-30 filter brightness-75">
+        <div class="absolute inset-0 z-0 pointer-events-none" aria-hidden="true">
+            <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1920&q=80" alt="" class="w-full h-full object-cover opacity-30 filter brightness-75">
             <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/80 to-transparent"></div>
         </div>
         

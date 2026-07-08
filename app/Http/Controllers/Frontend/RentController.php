@@ -22,7 +22,7 @@ class RentController extends Controller
      */
     public function show($id)
     {
-        $property = RentProperty::findOrFail($id);
+        $property = RentProperty::with('agent')->findOrFail($id);
 
         return view('frontend.properties.rent-detail', compact('property'));
     }

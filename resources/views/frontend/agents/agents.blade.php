@@ -5,8 +5,8 @@
 @section('content')
     <!-- Hero Banner Section -->
     <header class="relative bg-slate-900 py-24 sm:py-32 overflow-hidden">
-        <div class="absolute inset-0 z-0">
-            <img src="{{ asset('images/hero.png') }}" alt="TashleyHomes Luxury Property" class="w-full h-full object-cover opacity-20 filter brightness-50">
+        <div class="absolute inset-0 z-0 pointer-events-none" aria-hidden="true">
+            <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1920&q=80" alt="" class="w-full h-full object-cover opacity-20 filter brightness-50">
             <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/90 to-transparent"></div>
         </div>
         
@@ -43,7 +43,7 @@
                         <!-- Agent Photo -->
                         <div class="relative h-72 w-full overflow-hidden bg-slate-100">
                             @if($agent->photo)
-                                <img src="{{ $agent->photo }}" alt="{{ $agent->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                <img src="{{ $agent->resolved_photo_url }}" alt="{{ $agent->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                             @else
                                 <div class="absolute inset-0 flex items-center justify-center text-slate-300">
                                     <svg class="w-24 h-24" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
@@ -86,9 +86,9 @@
                                 </a>
                             </div>
                             
-                            <button class="mt-6 w-full py-2.5 px-4 bg-slate-900 hover:bg-indigo-600 text-white text-sm font-bold rounded-xl transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                                Contact Agent
-                            </button>
+                            <a href="mailto:{{ $agent->email }}?subject={{ rawurlencode('Real Estate Inquiry') }}&body={{ rawurlencode('Hi ' . $agent->name . ', I would like to discuss a property with you.') }}" class="mt-6 w-full py-2.5 px-4 bg-slate-900 hover:bg-indigo-600 text-white text-sm font-bold rounded-xl transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 inline-flex items-center justify-center">
+                                <i class="fas fa-envelope mr-2"></i>Contact Agent
+                            </a>
                         </div>
                     </div>
                 @endforeach

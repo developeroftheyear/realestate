@@ -30,11 +30,11 @@
                 <input type="text" name="location" value="{{ old('location', $rentProperty->location) }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 border p-2">
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700">Monthly Rent ($)</label>
+                <label class="block text-sm font-medium text-gray-700">Monthly Rent (KES)</label>
                 <input type="number" name="monthly_rent" value="{{ old('monthly_rent', $rentProperty->monthly_rent) }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 border p-2">
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700">Security Deposit ($)</label>
+                <label class="block text-sm font-medium text-gray-700">Security Deposit (KES)</label>
                 <input type="number" name="security_deposit" value="{{ old('security_deposit', $rentProperty->security_deposit) }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 border p-2">
             </div>
             <div>
@@ -56,6 +56,15 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700">Available From</label>
                 <input type="date" name="available_from" value="{{ old('available_from', optional($rentProperty->available_from)->format('Y-m-d')) }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 border p-2">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Assigned Agent</label>
+                <select name="agent_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 border p-2">
+                    <option value="">— No agent assigned —</option>
+                    @foreach($agents as $agent)
+                        <option value="{{ $agent->id }}" {{ old('agent_id', $rentProperty->agent_id) == $agent->id ? 'selected' : '' }}>{{ $agent->name }} ({{ $agent->email }})</option>
+                    @endforeach
+                </select>
             </div>
             <div class="md:col-span-2">
                 <label class="block text-sm font-medium text-gray-700">Current Image</label>

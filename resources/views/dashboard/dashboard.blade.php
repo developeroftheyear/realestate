@@ -20,8 +20,9 @@
     </div>
 
     <div class="bg-white rounded-lg shadow p-6 border-t-4 border-yellow-500">
-        <h3 class="text-gray-500 text-sm uppercase tracking-wider">Total Inquiries</h3>
-        <p class="text-3xl font-bold text-gray-800 mt-2">{{ $stats['contact_messages_count'] + $stats['sell_inquiries_count'] }}</p>
+        <h3 class="text-gray-500 text-sm uppercase tracking-wider">Sell Inquiries</h3>
+        <p class="text-3xl font-bold text-gray-800 mt-2">{{ $stats['sell_inquiries_count'] }}</p>
+        <a href="{{ route('panel.sell-inquiries.index') }}" class="text-sm text-indigo-600 hover:text-indigo-800 mt-2 inline-block">View all &rarr;</a>
     </div>
 </div>
 

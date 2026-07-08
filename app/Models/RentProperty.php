@@ -22,7 +22,8 @@ class RentProperty extends Model
         'image_url',
         'is_featured',
         'is_pet_friendly',
-        'is_furnished'
+        'is_furnished',
+        'agent_id',
     ];
     
     protected $casts = [
@@ -37,13 +38,13 @@ class RentProperty extends Model
     // Helper method to format rent price
     public function formattedRent()
     {
-        return '$' . number_format($this->monthly_rent, 0);
+        return 'KSh ' . number_format($this->monthly_rent, 0);
     }
     
     // Helper for deposit
     public function formattedDeposit()
     {
-        return '$' . number_format($this->security_deposit, 0);
+        return 'KSh ' . number_format($this->security_deposit, 0);
     }
 
     public function getResolvedImageUrlAttribute(): string
@@ -57,6 +58,11 @@ class RentProperty extends Model
         }
 
         return asset('storage/' . $this->image_url);
+    }
+
+    public function agent()
+    {
+        return $this->belongsTo(Agent::class);
     }
 
     public function contactMessages()

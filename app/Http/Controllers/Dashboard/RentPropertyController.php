@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Models\RentProperty;
+use App\Models\Agent;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -17,7 +18,9 @@ class RentPropertyController extends Controller
 
     public function create()
     {
-        return view('dashboard.rent_properties.create');
+        $agents = Agent::orderBy('name')->get();
+
+        return view('dashboard.rent_properties.create', compact('agents'));
     }
 
     public function store(Request $request)
@@ -37,6 +40,7 @@ class RentPropertyController extends Controller
             'is_featured' => 'boolean',
             'is_pet_friendly' => 'boolean',
             'is_furnished' => 'boolean',
+            'agent_id' => 'nullable|exists:agents,id',
         ]);
 
         $validated['image_url'] = $request->file('image')->store('rent_properties', 'public');
@@ -58,7 +62,9 @@ class RentPropertyController extends Controller
 
     public function edit(RentProperty $rentProperty)
     {
-        return view('dashboard.rent_properties.edit', compact('rentProperty'));
+        $agents = Agent::orderBy('name')->get();
+
+        return view('dashboard.rent_properties.edit', compact('rentProperty', 'agents'));
     }
 
     public function update(Request $request, RentProperty $rentProperty)
@@ -78,6 +84,7 @@ class RentPropertyController extends Controller
             'is_featured' => 'boolean',
             'is_pet_friendly' => 'boolean',
             'is_furnished' => 'boolean',
+            'agent_id' => 'nullable|exists:agents,id',
         ]);
 
         if ($request->hasFile('image')) {

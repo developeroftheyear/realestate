@@ -3,6 +3,14 @@
 @section('title', $property->title . ' - Rent | TashleyHomes')
 
 @section('content')
+    @php
+        $agent = $property->agent;
+        $agentName = $agent?->name ?? 'TashleyHomes Team';
+        $agentEmail = $agent?->email ?? 'support@tashleyhomes.com';
+        $agentPhone = $agent?->phone ?? '+254 792 051 974';
+        $emailSubject = 'Rental inquiry: ' . ($property->title ?? 'Property');
+        $emailBody = 'Hi, I am interested in renting "' . ($property->title ?? 'Property') . '" (ID: #' . ($property->id ?? 'N/A') . '). Monthly rent: KSh ' . number_format($property->monthly_rent ?? 0) . '. Please contact me with more details.';
+    @endphp
     <!-- Property Detail Section -->
     <div class="container mx-auto px-6 py-12">
         <a href="{{ route('rent.index') }}" class="text-blue-600 mb-6 inline-block hover:text-blue-800 transition">
@@ -118,6 +126,10 @@
                     </div>
                     
                     <!-- Application Form - Rent specific -->
+                    <a href="mailto:{{ $agentEmail }}?subject={{ rawurlencode($emailSubject) }}&body={{ rawurlencode($emailBody) }}" class="w-full flex items-center justify-center bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition mb-3 shadow-lg hover:shadow-indigo-100 font-semibold">
+                        <i class="fas fa-envelope mr-2"></i>Email Agent
+                    </a>
+
                     <a href="{{ route('contact.index', [
                         'subject' => 'Apply to Rent',
                         'message' => 'I would like to apply to rent: ' . ($property->title ?? 'Property') . ' (ID: #' . ($property->id ?? 'N/A') . '). Monthly rent: KSh ' . number_format($property->monthly_rent ?? 0) . '.',
@@ -139,12 +151,14 @@
                         <p class="text-sm text-gray-600 mb-2">
                             <i class="fas fa-user-circle mr-2 text-blue-600"></i>Listed by:
                         </p>
-                        <div class="flex justify-between items-center">
-                            <span class="font-semibold text-gray-800">{{ $property->agent_name ?? 'TashleyHomes Team' }}</span>
-                            <span class="text-sm text-gray-500">
-                                <i class="fas fa-phone mr-1"></i> {{ $property->agent_phone ?? '(+254) 7
-                                    12345678' }}
-                            </span>
+                        <div class="space-y-2">
+                            <span class="font-semibold text-gray-800 block">{{ $agentName }}</span>
+                            <a href="mailto:{{ $agentEmail }}" class="text-sm text-indigo-600 hover:text-indigo-800 block">
+                                <i class="fas fa-envelope mr-1"></i>{{ $agentEmail }}
+                            </a>
+                            <a href="tel:{{ preg_replace('/\s+/', '', $agentPhone) }}" class="text-sm text-gray-500 hover:text-gray-700 block">
+                                <i class="fas fa-phone mr-1"></i>{{ $agentPhone }}
+                            </a>
                         </div>
                     </div>
                 </div>

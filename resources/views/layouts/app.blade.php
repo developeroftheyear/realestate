@@ -14,8 +14,10 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
+    <body class="font-sans antialiased relative bg-white">
+        <style>[x-cloak]{display:none!important}</style>
+        <script>document.body.classList.remove('overflow-y-hidden','overflow-hidden');</script>
+        <div class="min-h-screen bg-gray-100 relative z-10">
             @include('layouts.navigation')
 
             <!-- Page Heading -->

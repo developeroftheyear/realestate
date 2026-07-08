@@ -15,10 +15,18 @@ class PropertyController extends Controller
      */
     public function index()
     {
-        // Get all properties (for Buy page)
-        $properties = Property::latest()->get();
+        $properties = Property::with('agent')->latest()->get();
         
-        // Return the correct view (index.blade.php)
+        return view('frontend.properties.properties', compact('properties'));
+    }
+
+    /**
+     * Display the dedicated buy listings page (alias of home)
+     */
+    public function buy()
+    {
+        $properties = Property::with('agent')->latest()->get();
+
         return view('frontend.properties.properties', compact('properties'));
     }
 
@@ -27,7 +35,8 @@ class PropertyController extends Controller
      */
     public function show($id)
     {
-        $property = Property::findOrFail($id);
+        $property = Property::with('agent')->findOrFail($id);
+
         return view('frontend.properties.buy-detail', compact('property'));
     }
 

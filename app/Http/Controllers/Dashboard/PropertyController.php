@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Models\Property;
+use App\Models\Agent;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -17,7 +18,9 @@ class PropertyController extends Controller
 
     public function create()
     {
-        return view('dashboard.properties.create');
+        $agents = Agent::orderBy('name')->get();
+
+        return view('dashboard.properties.create', compact('agents'));
     }
 
     public function store(Request $request)
@@ -32,6 +35,7 @@ class PropertyController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'area_sqft' => 'required|numeric',
             'is_featured' => 'boolean',
+            'agent_id' => 'nullable|exists:agents,id',
         ]);
 
         $validated['image_url'] = $request->file('image')->store('properties', 'public');
@@ -50,7 +54,9 @@ class PropertyController extends Controller
 
     public function edit(Property $property)
     {
-        return view('dashboard.properties.edit', compact('property'));
+        $agents = Agent::orderBy('name')->get();
+
+        return view('dashboard.properties.edit', compact('property', 'agents'));
     }
 
     public function update(Request $request, Property $property)
@@ -65,6 +71,7 @@ class PropertyController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'area_sqft' => 'required|numeric',
             'is_featured' => 'boolean',
+            'agent_id' => 'nullable|exists:agents,id',
         ]);
 
         if ($request->hasFile('image')) {

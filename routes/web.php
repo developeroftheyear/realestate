@@ -51,6 +51,7 @@ use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\PropertyController as DashboardPropertyController;
 use App\Http\Controllers\Dashboard\RentPropertyController as DashboardRentPropertyController;
 use App\Http\Controllers\Dashboard\AgentController as DashboardAgentController;
+use App\Http\Controllers\Dashboard\SellInquiryController as DashboardSellInquiryController;
 
 Route::prefix('panel')->name('panel.')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
@@ -59,4 +60,5 @@ Route::prefix('panel')->name('panel.')->middleware(['auth', 'admin'])->group(fun
     Route::resource('agents', DashboardAgentController::class);
     Route::resource('contact-messages', DashboardContactMessageController::class)->only(['index', 'show', 'destroy']);
     Route::post('contact-messages/{contact_message}/reply', [DashboardContactMessageController::class, 'reply'])->name('contact-messages.reply');
+    Route::resource('sell-inquiries', DashboardSellInquiryController::class)->only(['index', 'show', 'destroy']);
 });

@@ -6,10 +6,14 @@
     <title>Admin Panel - @yield('title', 'Dashboard')</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-slate-100 min-h-screen font-sans antialiased flex">
+<body class="bg-slate-100 min-h-screen font-sans antialiased flex relative">
+    <style>[x-cloak]{display:none!important}</style>
+    <script>
+        document.body.classList.remove('overflow-y-hidden','overflow-hidden');
+    </script>
 
     <!-- Sidebar -->
-    <aside class="w-64 bg-indigo-900 text-white flex-shrink-0 min-h-screen">
+    <aside class="relative z-20 w-64 bg-indigo-900 text-white flex-shrink-0 min-h-screen">
         <div class="p-6">
             <h2 class="text-2xl font-bold tracking-wider">Admin Panel</h2>
         </div>
@@ -19,6 +23,7 @@
             <a href="{{ route('panel.rent-properties.index') }}" class="block px-6 py-3 {{ request()->routeIs('panel.rent-properties.*') ? 'bg-indigo-800' : 'hover:bg-indigo-800' }}">Rent Properties</a>
             <a href="{{ route('panel.agents.index') }}" class="block px-6 py-3 {{ request()->routeIs('panel.agents.*') ? 'bg-indigo-800' : 'hover:bg-indigo-800' }}">Agents</a>
             <a href="{{ route('panel.contact-messages.index') }}" class="block px-6 py-3 {{ request()->routeIs('panel.contact-messages.*') ? 'bg-indigo-800' : 'hover:bg-indigo-800' }}">Contact Messages</a>
+            <a href="{{ route('panel.sell-inquiries.index') }}" class="block px-6 py-3 {{ request()->routeIs('panel.sell-inquiries.*') ? 'bg-indigo-800' : 'hover:bg-indigo-800' }}">Sell Inquiries</a>
             <div class="mt-8 px-6 border-t border-indigo-800 pt-4">
                 <a href="{{ url('/') }}" class="text-indigo-300 hover:text-white flex items-center gap-2">
                     &larr; Back to Site

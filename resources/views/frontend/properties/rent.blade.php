@@ -7,8 +7,8 @@
     <!-- Hero Banner Section -->
     <header class="relative bg-slate-900 py-24 sm:py-32 overflow-hidden">
         <!-- Background Hero Image -->
-        <div class="absolute inset-0 z-0">
-            <img src="{{ asset('images/hero.png') }}" alt="TashleyHomes Luxury Property" class="w-full h-full object-cover opacity-40 filter brightness-90">
+        <div class="absolute inset-0 z-0 pointer-events-none" aria-hidden="true">
+            <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1920&q=80" alt="" class="w-full h-full object-cover opacity-40 filter brightness-90">
             <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/60 to-transparent"></div>
         </div>
         
@@ -157,9 +157,9 @@
                         <a href="{{ route('rent.show', $property->id ?? '#') }}" class="flex-1 text-center bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
                             <i class="fas fa-calendar-check mr-1"></i> Schedule Tour
                         </a>
-                        <button class="px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition">
-                            <i class="fas fa-heart"></i>
-                        </button>
+                        <a href="{{ route('contact.index', ['subject' => 'Rental Inquiry', 'message' => 'I am interested in renting: ' . ($property->title ?? 'Property') . ' (ID: #' . ($property->id ?? 'N/A') . ').', 'rent_property_id' => $property->id]) }}" class="px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition" title="Contact about this rental">
+                            <i class="fas fa-envelope"></i>
+                        </a>
                     </div>
                 </div>
             </div>
