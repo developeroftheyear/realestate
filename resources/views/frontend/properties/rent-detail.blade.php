@@ -1,6 +1,6 @@
 @extends('frontend.layouts.app')
 
-@section('title', $property->title . ' - Rent | TashleyHomes')
+@section('title', ($property->title ?? 'Property') . ' - Rent | TashleyHomes')
 
 @section('content')
     @php
@@ -11,73 +11,75 @@
         $emailSubject = 'Rental inquiry: ' . ($property->title ?? 'Property');
         $emailBody = 'Hi, I am interested in renting "' . ($property->title ?? 'Property') . '" (ID: #' . ($property->id ?? 'N/A') . '). Monthly rent: KSh ' . number_format($property->monthly_rent ?? 0) . '. Please contact me with more details.';
     @endphp
-    <!-- Property Detail Section -->
-    <div class="container mx-auto px-6 py-12">
-        <a href="{{ route('rent.index') }}" class="text-blue-600 mb-6 inline-block hover:text-blue-800 transition">
-            <i class="fas fa-arrow-left mr-2"></i>Back to Rentals
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
+        <a href="{{ route('rent.index') }}" class="inline-flex items-center gap-2 text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition-colors mb-8">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+            </svg>
+            Back to Rentals
         </a>
         
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Main Image & Details -->
-            <div class="lg:col-span-2">
-                <img src="{{ $property->resolved_image_url }}" alt="{{ $property->title ?? 'Property' }}" class="w-full h-96 object-cover rounded-xl shadow-lg">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10">
+            <div class="lg:col-span-2 space-y-8">
+                <div class="relative rounded-2xl overflow-hidden bg-slate-100 shadow-lg border border-slate-100">
+                    <img src="{{ $property->resolved_image_url }}" alt="{{ $property->title ?? 'Property' }}" class="w-full h-72 sm:h-96 object-cover">
+                    <div class="absolute top-4 left-4 flex flex-wrap gap-2">
+                        <span class="bg-emerald-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-sm">For Rent</span>
+                        @if($property->is_featured ?? false)
+                            <span class="bg-amber-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-sm">Featured</span>
+                        @endif
+                    </div>
+                </div>
                 
-                <div class="mt-6">
-                    <h1 class="text-3xl font-bold text-gray-800">{{ $property->title ?? 'Property Title' }}</h1>
-                    <p class="text-gray-500 mt-1">
-                        <i class="fas fa-map-marker-alt text-blue-500 mr-1"></i> 
+                <div>
+                    <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">{{ $property->title ?? 'Property Title' }}</h1>
+                    <p class="text-slate-500 mt-2 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-indigo-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+                        </svg>
                         {{ $property->location ?? 'Location not specified' }}
                     </p>
                     
-                    <div class="grid grid-cols-3 gap-4 mt-6 py-4 border-y">
-                        <div>
-                            <span class="text-gray-500">Bedrooms:</span> 
-                            <span class="font-semibold">{{ $property->bedrooms ?? 0 }}</span>
+                    <div class="grid grid-cols-3 gap-4 mt-8 py-6 border-y border-slate-100">
+                        <div class="text-center sm:text-left">
+                            <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Bedrooms</p>
+                            <p class="mt-1 text-xl font-bold text-slate-900">{{ $property->bedrooms ?? 0 }}</p>
                         </div>
-                        <div>
-                            <span class="text-gray-500">Bathrooms:</span> 
-                            <span class="font-semibold">{{ $property->bathrooms ?? 0 }}</span>
+                        <div class="text-center sm:text-left">
+                            <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Bathrooms</p>
+                            <p class="mt-1 text-xl font-bold text-slate-900">{{ $property->bathrooms ?? 0 }}</p>
                         </div>
-                        <div>
-                            <span class="text-gray-500">Area:</span> 
-                            <span class="font-semibold">{{ number_format($property->area_sqft ?? 0) }} sqft</span>
+                        <div class="text-center sm:text-left">
+                            <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Area</p>
+                            <p class="mt-1 text-xl font-bold text-slate-900">{{ number_format($property->area_sqft ?? 0) }} <span class="text-sm font-medium text-slate-500">sqft</span></p>
                         </div>
                     </div>
                     
-                    <div class="mt-6">
-                        <h3 class="text-xl font-semibold mb-3">Description</h3>
-                        <p class="text-gray-600 leading-relaxed">{{ $property->description ?? 'No description available for this property.' }}</p>
+                    <div class="mt-8">
+                        <h3 class="text-xl font-bold text-slate-900 mb-3">Description</h3>
+                        <p class="text-slate-600 leading-relaxed">{{ $property->description ?? 'No description available for this property.' }}</p>
                     </div>
 
-                    <!-- Rent-specific amenities -->
-                    @if(isset($property->is_pet_friendly) || isset($property->is_furnished))
-                    <div class="mt-6 pt-4 border-t">
-                        <h3 class="text-xl font-semibold mb-3">Amenities</h3>
-                        <div class="flex flex-wrap gap-3">
+                    @if(($property->is_pet_friendly ?? false) || ($property->is_furnished ?? false) || ($property->has_parking ?? false) || ($property->has_pool ?? false) || ($property->has_gym ?? false))
+                    <div class="mt-8 pt-8 border-t border-slate-100">
+                        <h3 class="text-xl font-bold text-slate-900 mb-4">Amenities</h3>
+                        <div class="flex flex-wrap gap-2">
                             @if($property->is_pet_friendly ?? false)
-                            <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
-                                <i class="fas fa-paw mr-1"></i> Pet Friendly
-                            </span>
+                            <span class="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 border border-emerald-100 px-3 py-1.5 rounded-full text-sm font-medium">Pet Friendly</span>
                             @endif
                             @if($property->is_furnished ?? false)
-                            <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">
-                                <i class="fas fa-couch mr-1"></i> Furnished
-                            </span>
+                            <span class="inline-flex items-center gap-1.5 bg-indigo-50 text-indigo-700 border border-indigo-100 px-3 py-1.5 rounded-full text-sm font-medium">Furnished</span>
                             @endif
                             @if($property->has_parking ?? false)
-                            <span class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm">
-                                <i class="fas fa-parking mr-1"></i> Parking Available
-                            </span>
+                            <span class="inline-flex items-center gap-1.5 bg-violet-50 text-violet-700 border border-violet-100 px-3 py-1.5 rounded-full text-sm font-medium">Parking</span>
                             @endif
                             @if($property->has_pool ?? false)
-                            <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm">
-                                <i class="fas fa-swimmer mr-1"></i> Pool
-                            </span>
+                            <span class="inline-flex items-center gap-1.5 bg-amber-50 text-amber-700 border border-amber-100 px-3 py-1.5 rounded-full text-sm font-medium">Pool</span>
                             @endif
                             @if($property->has_gym ?? false)
-                            <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm">
-                                <i class="fas fa-dumbbell mr-1"></i> Gym
-                            </span>
+                            <span class="inline-flex items-center gap-1.5 bg-rose-50 text-rose-700 border border-rose-100 px-3 py-1.5 rounded-full text-sm font-medium">Gym</span>
                             @endif
                         </div>
                     </div>
@@ -85,80 +87,69 @@
                 </div>
             </div>
             
-            <!-- Rent Specific Sidebar -->
             <div class="lg:col-span-1">
-                <div class="bg-white rounded-xl shadow-lg p-6 sticky top-6">
-                    <div class="border-b pb-4 mb-4">
-                        <p class="text-gray-500">Monthly Rent</p>
-                        <p class="text-4xl font-bold text-blue-600">
-                            KSh {{ number_format($property->monthly_rent ?? 0) }} 
-                            <span class="text-lg text-gray-500">/month</span>
+                <div class="bg-white rounded-2xl shadow-xl border border-slate-100 p-6 sm:p-8 sticky top-6">
+                    <div class="border-b border-slate-100 pb-5 mb-5">
+                        <p class="text-sm font-semibold text-slate-500 uppercase tracking-wide">Monthly Rent</p>
+                        <p class="text-3xl sm:text-4xl font-extrabold text-indigo-600 mt-1">
+                            KSh {{ number_format($property->monthly_rent ?? 0) }}
+                            <span class="text-base font-medium text-slate-400">/month</span>
                         </p>
                     </div>
                     
-                    <div class="space-y-3 mb-6">
-                        <div class="flex justify-between">
-                            <span class="text-gray-600">Security Deposit:</span>
-                            <span class="font-semibold">KSh {{ number_format($property->security_deposit ?? 0) }}</span>
+                    <div class="space-y-3 mb-6 text-sm">
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-500">Security Deposit</span>
+                            <span class="font-semibold text-slate-900">KSh {{ number_format($property->security_deposit ?? 0) }}</span>
                         </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-600">Lease Term:</span>
-                            <span class="font-semibold">{{ $property->lease_term ?? '12 months' }}</span>
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-500">Lease Term</span>
+                            <span class="font-semibold text-slate-900">{{ $property->lease_term ?? '12 months' }}</span>
                         </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-600">Available From:</span>
-                            <span class="font-semibold text-green-600">
-                                {{ isset($property->available_from) ? $property->available_from->format('F d, Y') : 'Immediately' }}
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-500">Available From</span>
+                            <span class="font-semibold text-emerald-600">
+                                {{ isset($property->available_from) ? $property->available_from->format('M d, Y') : 'Immediately' }}
                             </span>
                         </div>
-                    </div>
-
-                    <!-- Rent Features -->
-                    <div class="border-t pt-4 mb-6">
-                        <div class="flex justify-between text-sm">
-                            <span class="text-gray-500">Application Fee:</span>
-                            <span class="font-semibold">KSh {{ number_format($property->application_fee ?? 50) }}</span>
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-500">Application Fee</span>
+                            <span class="font-semibold text-slate-900">KSh {{ number_format($property->application_fee ?? 50) }}</span>
                         </div>
-                        <div class="flex justify-between text-sm mt-2">
-                            <span class="text-gray-500">Property ID:</span>
-                            <span class="font-semibold">#{{ $property->id ?? 'N/A' }}</span>
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-500">Property ID</span>
+                            <span class="font-semibold text-slate-900">#{{ $property->id ?? 'N/A' }}</span>
                         </div>
                     </div>
                     
-                    <!-- Application Form - Rent specific -->
-                    <a href="mailto:{{ $agentEmail }}?subject={{ rawurlencode($emailSubject) }}&body={{ rawurlencode($emailBody) }}" class="w-full flex items-center justify-center bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition mb-3 shadow-lg hover:shadow-indigo-100 font-semibold">
-                        <i class="fas fa-envelope mr-2"></i>Email Agent
-                    </a>
+                    <div class="space-y-3">
+                        <a href="mailto:{{ $agentEmail }}?subject={{ rawurlencode($emailSubject) }}&body={{ rawurlencode($emailBody) }}" class="w-full flex items-center justify-center gap-2 bg-indigo-600 text-white py-3 rounded-xl hover:bg-indigo-700 transition shadow-lg shadow-indigo-200 font-semibold">
+                            Email Agent
+                        </a>
 
-                    <a href="{{ route('contact.index', [
-                        'subject' => 'Apply to Rent',
-                        'message' => 'I would like to apply to rent: ' . ($property->title ?? 'Property') . ' (ID: #' . ($property->id ?? 'N/A') . '). Monthly rent: KSh ' . number_format($property->monthly_rent ?? 0) . '.',
-                        'rent_property_id' => $property->id,
-                    ]) }}" class="w-full flex items-center justify-center bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition mb-3 shadow-lg hover:shadow-blue-100 font-semibold">
-                        <i class="fas fa-file-alt mr-2"></i>Apply to Rent
-                    </a>
-                    
-                    <a href="{{ route('contact.index', [
-                        'subject' => 'Schedule a Viewing',
-                        'message' => 'I would like to schedule a viewing for the rental: ' . ($property->title ?? 'Property') . ' (ID: #' . ($property->id ?? 'N/A') . ').',
-                        'rent_property_id' => $property->id,
-                    ]) }}" class="w-full flex items-center justify-center border border-blue-600 text-blue-600 py-3 rounded-lg hover:bg-blue-50 transition font-semibold">
-                        <i class="fas fa-calendar-alt mr-2"></i>Schedule Viewing
-                    </a>
+                        <a href="{{ route('contact.index', [
+                            'subject' => 'Apply to Rent',
+                            'message' => 'I would like to apply to rent: ' . ($property->title ?? 'Property') . ' (ID: #' . ($property->id ?? 'N/A') . '). Monthly rent: KSh ' . number_format($property->monthly_rent ?? 0) . '.',
+                            'rent_property_id' => $property->id,
+                        ]) }}" class="w-full flex items-center justify-center gap-2 bg-slate-900 text-white py-3 rounded-xl hover:bg-slate-800 transition font-semibold">
+                            Apply to Rent
+                        </a>
+                        
+                        <a href="{{ route('contact.index', [
+                            'subject' => 'Schedule a Viewing',
+                            'message' => 'I would like to schedule a viewing for the rental: ' . ($property->title ?? 'Property') . ' (ID: #' . ($property->id ?? 'N/A') . ').',
+                            'rent_property_id' => $property->id,
+                        ]) }}" class="w-full flex items-center justify-center gap-2 border border-indigo-200 text-indigo-600 py-3 rounded-xl hover:bg-indigo-50 transition font-semibold">
+                            Schedule Viewing
+                        </a>
+                    </div>
 
-                    <!-- Contact Agent -->
-                    <div class="mt-4 p-4 bg-gray-50 rounded-lg">
-                        <p class="text-sm text-gray-600 mb-2">
-                            <i class="fas fa-user-circle mr-2 text-blue-600"></i>Listed by:
-                        </p>
+                    <div class="mt-6 p-4 bg-slate-50 rounded-xl border border-slate-100">
+                        <p class="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-3">Listed by</p>
                         <div class="space-y-2">
-                            <span class="font-semibold text-gray-800 block">{{ $agentName }}</span>
-                            <a href="mailto:{{ $agentEmail }}" class="text-sm text-indigo-600 hover:text-indigo-800 block">
-                                <i class="fas fa-envelope mr-1"></i>{{ $agentEmail }}
-                            </a>
-                            <a href="tel:{{ preg_replace('/\s+/', '', $agentPhone) }}" class="text-sm text-gray-500 hover:text-gray-700 block">
-                                <i class="fas fa-phone mr-1"></i>{{ $agentPhone }}
-                            </a>
+                            <span class="font-bold text-slate-900 block">{{ $agentName }}</span>
+                            <a href="mailto:{{ $agentEmail }}" class="text-sm text-indigo-600 hover:text-indigo-800 block truncate">{{ $agentEmail }}</a>
+                            <a href="tel:{{ preg_replace('/\s+/', '', $agentPhone) }}" class="text-sm text-slate-500 hover:text-slate-700 block">{{ $agentPhone }}</a>
                         </div>
                     </div>
                 </div>

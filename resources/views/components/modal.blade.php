@@ -43,7 +43,7 @@ $maxWidth = [
                 x-show="show"
                 x-transition
                 @click.stop
-                class="relative mb-6 bg-white rounded-lg overflow-hidden shadow-xl sm:w-full {{ $maxWidth }} sm:mx-auto"
+                class="relative mb-6 bg-white rounded-2xl overflow-hidden shadow-xl border border-slate-100 sm:w-full {{ $maxWidth }} sm:mx-auto"
             >
                 {{ $slot }}
             </div>

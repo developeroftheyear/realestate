@@ -4,7 +4,7 @@
     <input
         :type="show ? 'text' : 'password'"
         @disabled($disabled)
-        {{ $attributes->except('class')->merge(['class' => 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block w-full pr-10']) }}
+        {{ $attributes->except('class')->merge(['class' => 'border-slate-200 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-xl shadow-sm block w-full pr-10 transition-colors']) }}
     />
     <button
         type="button"

@@ -70,6 +70,14 @@ class RentController extends Controller
     {
         $filters = [];
 
+        if ($request->filled('q')) {
+            $filters['q'] = trim($request->q);
+        }
+
+        if ($request->filled('price_range')) {
+            $filters['price_range'] = $request->price_range;
+        }
+
         if ($request->filled('min_rent')) {
             $filters['min_rent'] = (float) $request->min_rent;
         }
@@ -138,6 +146,10 @@ class RentController extends Controller
     private function propertyMatchesFilter(RentProperty $property, string $key, mixed $value): bool
     {
         return match ($key) {
+            'q' => str_contains(strtolower($property->title ?? ''), strtolower((string) $value))
+                || str_contains(strtolower($property->location ?? ''), strtolower((string) $value))
+                || str_contains(strtolower($property->description ?? ''), strtolower((string) $value)),
+            'price_range' => $this->matchesRentPriceRange((float) $property->monthly_rent, (string) $value),
             'min_rent' => (float) $property->monthly_rent >= (float) $value,
             'max_rent' => (float) $property->monthly_rent <= (float) $value,
             'bedrooms' => $value === '4+'
@@ -154,6 +166,18 @@ class RentController extends Controller
             'furnished' => (bool) $property->is_furnished === (bool) $value,
             'featured' => (bool) $property->is_featured === true,
             default => false,
+        };
+    }
+
+    private function matchesRentPriceRange(float $rent, string $range): bool
+    {
+        return match ($range) {
+            '0-50000' => $rent < 50000,
+            '50000-100000' => $rent >= 50000 && $rent < 100000,
+            '100000-250000' => $rent >= 100000 && $rent < 250000,
+            '250000-500000' => $rent >= 250000 && $rent < 500000,
+            '500000+' => $rent >= 500000,
+            default => true,
         };
     }
 }
